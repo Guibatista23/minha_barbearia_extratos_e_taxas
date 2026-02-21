@@ -1,41 +1,15 @@
-# 💈 BarberStats - Sistema de Fechamento de Caixa
+# 📊 Analisando a Lucratividade de uma Barbearia com Python & SQL
 
-Este é um projeto desenvolvido em **Python** e **SQL** para automatizar o fechamento financeiro de uma barbearia. O objetivo é transformar os dados brutos de vendas (Cartão, QR Code) em um relatório detalhado de faturamento líquido.
+Este projeto analisa o faturamento real de uma barbearia, identificando dias de baixa ociosidade e o impacto das taxas de cartão no lucro líquido.
 
-## 🚀 Funcionalidades
+## 🚀 Tecnologias Utilizadas
+- **Python**: Lógica principal.
+- **Pandas**: Manipulação e tratamento de dados.
+- **SQLite**: Armazenamento dos serviços.
+- **Matplotlib**: Geração de gráficos de análise.
 
-- **Cálculo Automático de Taxas:** Processa descontos diferenciados para crédito, débito e Pix/QR Code.
-- **Integração SQL:** Persistência de dados segura utilizando SQLite3.
-- **Relatório de Performance:** Exibe faturamento bruto, líquido e média de vendas diária através da biblioteca Pandas.
+## 📈 Insights Gerados
+Através da análise, identificamos que a **Terça-feira** opera com apenas 25% da capacidade em comparação ao **Sábado**. Além disso, calculamos o lucro real após as taxas de Crédito (4.99%) e Débito (2.0%).
 
-## 🛠️ Tecnologias Utilizadas
-
-* **Python 3.13**
-* **SQLite3** (Banco de dados)
-* **Pandas** (Análise e processamento de dados)
-* **DB Browser for SQLite** (Interface para gestão do banco)
-
-## 📊 Exemplo de Relatório
-
-Ao executar o `analise.py`, o sistema gera o seguinte output no terminal:
-
-========================================
-      RELATÓRIO DE VENDAS - BARBEARIA
-========================================
-  Data_Dia  Total_Vendas  Valor_Liquido
-2023-10-27        1801.0        1750.62
-----------------------------------------
-Faturamento Bruto Total:  R$  1801.00
-Faturamento Líquido Total: R$  1750.62
-Média de Vendas por Dia:   R$  1801.00
-========================================
-
-## ⚙️ Como executar
-
-1. Clone o repositório.
-2. Certifique-se de que o arquivo `barbearia_oficial.db` está na mesma pasta que o `analise.py`.
-3. Instale o Pandas se ainda não tiver: `pip install pandas`.
-4. Execute: `python analise.py`.
-
----
-Desenvolvido por [Seu Nome] - Estudo de integração Python + SQL.
+### Visualização dos Dados
+![Gráfico de Faturamento](grafico_barbearia.png)

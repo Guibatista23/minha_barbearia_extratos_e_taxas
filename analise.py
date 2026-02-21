@@ -1,53 +1,46 @@
-import sqlite3
-import pandas as pd
-import os
+import matplotlib.pyplot as plt
 
-# --- CONFIGURAÇÕES DE TAXAS (Mude aqui quando souber os valores reais) ---
-TAXA_DEBITO = 0.02   # Exemplo: 2%
-TAXA_CREDITO = 0.04  # Exemplo: 4%
-TAXA_QR_CODE = 0.00  # Geralmente 0%
+# Criando o gráfico de barras
+analise_dias['valor_liquido'].plot(kind='bar', color='skyblue', edgecolor='black')
+plt.title('Lucro Líquido por Dia da Semana')
+plt.xlabel('Dia da Semana')
+plt.ylabel('R$ Líquido')
+plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
 
-# Localização do banco
-diretorio = os.path.dirname(os.path.abspath(__file__))
-caminho_banco = os.path.join(diretorio, 'barbearia_oficial.db')
+# Lendo os dados para o Pandas
+df = pd.read_sql_query("SELECT * FROM servicos", conn)
 
-try:
-    conexao = sqlite3.connect(caminho_banco)
-    
-    # SQL Inteligente: Já traz os dados e calcula o líquido de cada linha
-    query = f"""
-    SELECT 
-        Data_Dia, 
-        Total_Vendas,
-        (Vendas_Debito * {1 - TAXA_DEBITO}) + 
-        (Vendas_Credito * {1 - TAXA_CREDITO}) + 
-        (Codigo_QR * {1 - TAXA_QR_CODE}) AS Valor_Liquido
-    FROM Fechamento_Barbearia;
-    """
-    
-    df = pd.read_sql_query(query, conexao)
+# Definindo as taxas (ajuste conforme a barbearia usa)
+taxas = {'Crédito': 0.0499, 'Débito': 0.02, 'Pix': 0.0}
 
-    if not df.empty:
-        # --- CÁLCULOS EXTRAS PARA O RELATÓRIO ---
-        total_bruto = df['Total_Vendas'].sum()
-        total_liquido = df['Valor_Liquido'].sum()
-        media_diaria = df['Total_Vendas'].mean()
+# Criando a coluna de valor líquido
+df['taxa_aplicada'] = df['tipo_pagamento'].map(taxas)
+df['valor_liquido'] = df['valor'] * (1 - df['taxa_aplicada'])
 
-        print("\n" + "="*40)
-        print("      RELATÓRIO DE VENDAS - BARBEARIA")
-        print("="*40)
-        print(df.to_string(index=False)) # Mostra a tabela sem o índice chato
-        print("-"*40)
-        print(f"Faturamento Bruto Total:  R$ {total_bruto:>8.2f}")
-        print(f"Faturamento Líquido Total: R$ {total_liquido:>8.2f}")
-        print(f"Média de Vendas por Dia:   R$ {media_diaria:>8.2f}")
-        print("="*40)
-    else:
-        print("O banco de dados está vazio.")
+# Agrupando por dia da semana
+analise_dias = df.groupby('dia_semana').agg({
+    'id': 'count',           # Quantidade de cortes
+    'valor': 'sum',         # Faturamento Bruto
+    'valor_liquido': 'sum'  # Faturamento Líquido
+}).rename(columns={'id': 'qtd_cortes'})
 
-except Exception as e:
-    print(f"❌ Erro ao gerar relatório: {e}")
+# Ordenando os dias para o gráfico não ficar bagunçado
+ordem_dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
+analise_dias = analise_dias.reindex(ordem_dias)
 
-finally:
-    if 'conexao' in locals():
-        conexao.close()
+print(analise_dias)
+
+import matplotlib.pyplot as plt
+
+# Criando o gráfico de barras
+analise_dias['valor_liquido'].plot(kind='bar', color='skyblue', edgecolor='black')
+plt.title('Lucro Líquido por Dia da Semana')
+plt.xlabel('Dia da Semana')
+plt.ylabel('R$ Líquido')
+plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
